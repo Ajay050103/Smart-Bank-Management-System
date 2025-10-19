@@ -5,7 +5,6 @@ A Java-based web application that simulates essential banking operations — inc
 Built using **Spring MVC**, **Hibernate (JPA)**, **MySQL**, **JSP**, and **Servlets**.
 
 ---
-
 ### 🚀 Features
 
 * Secure user registration and login
