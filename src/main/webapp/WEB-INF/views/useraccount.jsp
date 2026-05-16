@@ -48,6 +48,8 @@
   <button class="green" onclick="window.location.href='usercheckbalance'">Check Balance</button>
   <button class="blue" onclick="window.location.href='usertransferamountform'">Transfer Amount</button>
   <button class="black" onclick="window.location.href='userhistory'">History</button>
+  <button class="blue" onclick="window.location.href='loanapply'">Apply for Loan</button>
+  <button class="green" onclick="window.location.href='loanstatus'">My Loan Status</button>
   <button class="gray" onclick="history.back()">Logout</button>
 </body>
 </html>

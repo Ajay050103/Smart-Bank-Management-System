@@ -78,6 +78,7 @@
   <button class="credit" onclick="window.location.href='admincreditform'">CREDIT</button>
   <button class="debit" onclick="window.location.href='admindebitform'">DEBIT</button>
   <button class="history" onclick="window.location.href='admintranshistory'">Transactions History</button>
+  <button class="credit" style="background-color:#6f42c1;" onclick="window.location.href='loanlist'">Loan Applications</button>
   <button class="logout" onclick="history.back()">Logout</button>
 </div>
 </body>

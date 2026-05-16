@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.model.LoanApplication;
 import com.model.Transactions;
+import com.service.LoanService;
 import com.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +22,9 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	LoanService loanService;
 	
 	@GetMapping("/register")
 	public String userRegister() {
@@ -116,5 +121,38 @@ public class UserController {
 		List<Transactions> transactions=userService.getHistory(accountNuumber);
 		model.addAttribute("history", transactions);
 		return"userhistory";
+	}
+
+	@GetMapping("/loanapply")
+	public String loanApplyForm() {
+		return "loanapply";
+	}
+
+	@PostMapping("/loansubmit")
+	public String submitLoanApplication(HttpServletRequest req, Model model) {
+		String accountNumber = (String) req.getSession().getAttribute("A/cno");
+		double loanAmount = Double.parseDouble(req.getParameter("loanAmount"));
+		String loanType = req.getParameter("loanType");
+		int tenureMonths = Integer.parseInt(req.getParameter("tenureMonths"));
+		double monthlyIncome = Double.parseDouble(req.getParameter("monthlyIncome"));
+		String purpose = req.getParameter("purpose");
+
+		boolean applied = loanService.applyForLoan(accountNumber, loanAmount, loanType, tenureMonths, monthlyIncome,
+				purpose);
+		if (applied) {
+			model.addAttribute("message", "Loan application submitted successfully. Status: PENDING");
+		} else {
+			model.addAttribute("message",
+					"Application failed. Check amount/tenure/income or you may already have a pending loan.");
+		}
+		return "loanapply";
+	}
+
+	@GetMapping("/loanstatus")
+	public String loanStatus(HttpServletRequest req, Model model) {
+		String accountNumber = (String) req.getSession().getAttribute("A/cno");
+		List<LoanApplication> loans = loanService.getLoansByAccount(accountNumber);
+		model.addAttribute("loans", loans);
+		return "loanstatus";
 	}
 }

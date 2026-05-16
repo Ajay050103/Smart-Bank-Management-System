@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.model.Transactions;
 import com.model.UserAccountDetails;
+import com.service.LoanService;
 import com.service.UserAccountDetailsService;
 import com.utils.AccountNumberGenerator;
 import com.utils.UserPasswordGenerator;
@@ -24,6 +25,9 @@ public class UserAccountDetailsController {
 	
 	@Autowired
 	UserPasswordGenerator userPasswordGenerator;
+
+	@Autowired
+	LoanService loanService;
 //	create new user Accoount form
 	@RequestMapping("/useraccountform")
 	public String userAccountForm() {
@@ -112,5 +116,39 @@ public class UserAccountDetailsController {
 		List <Transactions> statement=userAccountDetailsService.getUserStatement(accountNumber);
 		req.setAttribute("statement", statement);
 		return "statement";
+	}
+
+	@GetMapping("/loanlist")
+	public String adminLoanList(Model model) {
+		model.addAttribute("loans", loanService.getAllLoans());
+		return "adminloanlist";
+	}
+
+	@PostMapping("/loanapprove")
+	public String approveLoan(HttpServletRequest req, Model model) {
+		long loanId = Long.parseLong(req.getParameter("loanId"));
+		String remarks = req.getParameter("remarks");
+		boolean approved = loanService.approveLoan(loanId, remarks);
+		if (approved) {
+			model.addAttribute("message", "Loan approved and amount credited to customer account.");
+		} else {
+			model.addAttribute("message", "Could not approve loan. It may already be processed.");
+		}
+		model.addAttribute("loans", loanService.getAllLoans());
+		return "adminloanlist";
+	}
+
+	@PostMapping("/loanreject")
+	public String rejectLoan(HttpServletRequest req, Model model) {
+		long loanId = Long.parseLong(req.getParameter("loanId"));
+		String remarks = req.getParameter("remarks");
+		boolean rejected = loanService.rejectLoan(loanId, remarks);
+		if (rejected) {
+			model.addAttribute("message", "Loan application rejected.");
+		} else {
+			model.addAttribute("message", "Could not reject loan. It may already be processed.");
+		}
+		model.addAttribute("loans", loanService.getAllLoans());
+		return "adminloanlist";
 	}
 }
